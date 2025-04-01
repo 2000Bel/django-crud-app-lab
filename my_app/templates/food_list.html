@@ -1,0 +1,13 @@
+{% extends "my_app/base.html" %}
+
+{% block content %}
+<h2>List of foods</h2>
+<ul>
+    {% for food in foods %}
+<li>
+    <a href="{% url 'food_detail' food.pk %}">{{ food.name }}</a>
+</li>
+{% endfor %}
+</ul>
+<a href="{% url 'food_create' %}">Add new food</a>
+{% endblock %}

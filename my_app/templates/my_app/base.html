@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Collector</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'static/styles.css' %}">
+</head>
+<body>
+    <header>
+        <h1><a href="{% url 'home' %}">Food Collector</a></h1>
+        <nav>
+            <ul>
+                <li><a href="{% url 'food_list' %}">All Foods</a></li>
+                {% if user.is_authenticated %}
+                    <li><a href="{% url 'food_create' %}">Add Food</a></li>
+                    <li><a href="{% url 'logout' %}">Logout</a></li>
+                {% else %}
+                    <li><a href="{% url 'login' %}">login</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </header>
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+</body>
+</html>
