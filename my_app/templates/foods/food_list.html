@@ -1,4 +1,4 @@
-{% extends "my_app/base.html" %}
+{% extends "base.html" %}
 
 {% block content %}
 <h2>List of foods</h2>
@@ -9,5 +9,5 @@
 </li>
 {% endfor %}
 </ul>
-<a href="{% url 'food_create' %}">Add new food</a>
+<a href="{% url 'add_food' %}">Add new food</a>
 {% endblock %}

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h2>{{ food.name }}</h2>
+    <p>{{ food.description }}</p>
+    <p><strong>Date of creation :</strong> {{ food.created_at }}</p>
+    
+    <h3>Ingredients:</h3>
+    <ul>
+    {% for ingredient in food.ingredients.all %}
+    <li>{{ ingredient.name }}</li>
+    {% endfor %}
+    </ul>
+
+    <form method="post" action="{% url 'ingredient_create' food.pk %}">
+    {% csrf_token %}
+    <input type="text" name="name" placeholder="Nombre del Ingrediente" required>
+    <button type="submit">Add Ingredient</button>
+    </form>
+
+    <a href="{% url 'food_update' food.pk %}">Edit</a> | 
+    <a href="{% url 'food_delete' food.pk %}">Delete</a>
+{% endblock %}

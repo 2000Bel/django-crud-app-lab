@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}All Foods{% endblock %}
+
+{% block content %}
+<h2>List of Foods</h2>
+<a href="{% url 'add_food' %}">Add new food</a>
+<ul>
+    {% for food in foods %}
+        <li>{{ food.name }} - {{ food.description }}</li>
+    {% empty %}
+        <li>No foods available</li>
+    {% endfor %}
+</ul>
+{% endblock %}

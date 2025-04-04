@@ -1,59 +1,66 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import login
 from .models import FoodItem
 from .forms import FoodItemForm
-from django.contrib.auth.decorators import login_required
 
 def home(request):
-    return render(request, 'my_app/home.html')
+    return render(request, 'home.html')
 
-@login_required
 def food_list(request):
-    foods = FoodItem.objects.filter(user=request.user)
-    return render(request, 'my_app/food_list.html', {'foods': foods})
+    foods = FoodItem.objects.all()
+    return render(request, 'food_list.html', {'foods': foods})
 
-@login_required
 def food_detail(request, pk):
-    food = get_object_or_404(FoodItem, pk=pk, user=request.user)
-    return render(request, 'my_app/food_detail.html', {'food': food})
+    food = get_object_or_404(FoodItem, pk=pk)
+    return render(request, 'food_detail.html', {'food': food})
+
+def signup(request):
+    if request.method == "POST":
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect('home')
+    else:
+        form = UserCreationForm()
+    return render(request, 'signup.html', {'form': form})
+
+def all_foods(request):
+    foods = FoodItem.objects.all()
+    return render(request, 'foods/all_foods.html', {'foods': foods})
 
 @login_required
-def food_create(request):
-    if request.method == 'POST':
+def add_food(request):
+    if request.method == "POST":
         form = FoodItemForm(request.POST)
         if form.is_valid():
             food = form.save(commit=False)
-            food.user = request.user
+            food.user = request.user  # Asigna el usuario actual
             food.save()
-            return redirect('food_list')
+            return redirect('all_foods')  # Redirige a la lista de alimentos
     else:
         form = FoodItemForm()
-    return render(request, 'my_app/food_form.html', {'form': form})
+
+    return render(request, 'foods/add_food.html', {'form': form})
 
 @login_required
 def food_update(request, pk):
-    food = get_object_or_404(FoodItem, pk=pk, user=request.user)
-    if request.method == 'POST':
+    food = get_object_or_404(FoodItem, pk=pk)
+    if request.method == "POST":
         form = FoodItemForm(request.POST, instance=food)
         if form.is_valid():
             form.save()
             return redirect('food_list')
     else:
         form = FoodItemForm(instance=food)
-    return render(request, 'my_app/food_form.html', {'form': form})
+    return render(request, 'food_form.html', {'form': form})
 
 @login_required
 def food_delete(request, pk):
-    food = get_object_or_404(FoodItem, pk=pk, user=request.user)
-    if request.method == 'POST':
+    food = get_object_or_404(FoodItem, pk=pk)
+    if request.method == "POST":
         food.delete()
         return redirect('food_list')
-    return render(request, 'my_app/food_confirm_delete.html', {'food': food})
-
-@login_required
-def ingredient_create(request, pk):
-    food = get_object_or_404(FoodItem, pk=food_pk, user=request.user)
-    if request.method == 'POST':
-        name = request.POST.get('name')
-        Ingredients.objects.create(food=food, name=name)
-        return redirect('food_detail', pk=food.pk)
-    return render(request, 'my_app/ingredient_form.html', {'food': food})
+    return render(request, 'food_confirm_delete.html', {'food': food})
