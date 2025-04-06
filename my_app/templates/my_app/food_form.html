@@ -4,14 +4,16 @@
 <link rel="stylesheet" href="{% static 'css/form.css' %}" />
 {% endblock %} 
 {% block content %}
+
 <div class="page-header">
-  <h1>Sign Up</h1>
-  <img src="{% static 'images/nerd-food.svg' %}" alt="A food using a computer" />
+    {% if food %}
+    <h1>Edit {{ food.name }}</h1>
+  {% else %}
+    <h1>Add a food</h1>
+  {% endif %}
 </div>
-{% if error_message %}
-  <p class="red-text">{{ error_message }}</p>
-{% endif %}
-<form action="" method="post" class="form-container" autocomplete="off">
+
+<form action="" method="post" class="form-container">
   {% csrf_token %}
   <table>
     {{ form.as_table }}

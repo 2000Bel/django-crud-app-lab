@@ -1,66 +1,113 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import UserCreationForm
+from django.shortcuts import render, redirect
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, DetailView
+from .models import Food, Ingredient
+from .forms import FeedingForm
+from django.http import HttpResponse
+from django.contrib.auth.views import LoginView
+from django.views.generic import ListView, DetailView
 from django.contrib.auth import login
-from .models import FoodItem
-from .forms import FoodItemForm
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+
+
+
+# Create your views here.
+class Home(LoginView):
+    template_name = 'home.html'
 
 def home(request):
-    return render(request, 'home.html')
+  return render(request, 'home.html')
 
-def food_list(request):
-    foods = FoodItem.objects.all()
-    return render(request, 'food_list.html', {'foods': foods})
+def about(request):
+  return render(request, 'about.html')
 
-def food_detail(request, pk):
-    food = get_object_or_404(FoodItem, pk=pk)
-    return render(request, 'food_detail.html', {'food': food})
+@login_required
+def food_index(request):
+  foods = Food.objects.filter(user=request.user)
+  return render(request, 'foods/index.html', { 'foods': foods })
+
+@login_required
+def food_detail(request, food_id):
+    food = Food.objects.get(id=food_id)
+    ingredients_food_doesnt_have = Ingredient.objects.exclude(id__in = food.ingredients.all().values_list('id'))
+
+    feeding_form = FeedingForm()
+    return render(request, 'foods/detail.html', {
+        'food': food,
+        'feeding_form': feeding_form,
+        'ingredients': ingredients_food_doesnt_have
+    })
+
+class FoodCreate(LoginRequiredMixin, CreateView):
+  model = Food
+  fields = ['name', 'breed', 'description', 'age']
+
+  def form_valid(self, form):
+    form.instance.user = self.request.user
+    return super().form_valid(form)
+
+class FoodUpdate(LoginRequiredMixin, UpdateView):
+  model = Food
+  fields = ['breed', 'description', 'age']
+
+class FoodDelete(LoginRequiredMixin, DeleteView):
+  model = Food
+  success_url = '/food/'
+
+@login_required
+def add_feeding(request, food_id):
+  form = FeedingForm(request.POST)
+
+  if form.is_valid():
+    new_feeding = form.save(commit=False)
+    new_feeding.food_id = food_id
+    new_feeding.save()
+  
+  return redirect('food-detail', food_id=food_id)
+
+class IngredientCreate(LoginRequiredMixin, CreateView):
+  model = Ingredient
+  fields = ['name', 'color']
+
+class IngredientList(LoginRequiredMixin, ListView):
+  model = Ingredient
+
+class IngredientDetail(LoginRequiredMixin, DetailView):
+  model = Ingredient
+
+class IngredientUpdate(LoginRequiredMixin, UpdateView):
+  model = Ingredient
+  fields = ['name', 'color']
+
+class IngredientDelete(LoginRequiredMixin, DeleteView):
+  model = Ingredient
+  success_url = '/ingredients/'
+
+@login_required
+def associate_ingredient(request, food_id, ingredient_id):
+  Food.objects.get(id=food_id).ingredients.add(ingredient_id)
+  return redirect('food-detail', food_id=food_id)
+
+@login_required
+def remove_ingredient(request, food_id, ingredient_id):
+  food = Food.objects.get(id=food_id)
+  ingredient = Ingredient.objects.get(id=ingredient_id)
+  food.ingredients.remove(ingredient_id)
+  return redirect('food-detail', food_id=food.id)
 
 def signup(request):
-    if request.method == "POST":
+    error_message = ''
+    if request.method == 'POST':
         form = UserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
             login(request, user)
-            return redirect('home')
-    else:
-        form = UserCreationForm()
-    return render(request, 'signup.html', {'form': form})
-
-def all_foods(request):
-    foods = FoodItem.objects.all()
-    return render(request, 'foods/all_foods.html', {'foods': foods})
-
-@login_required
-def add_food(request):
-    if request.method == "POST":
-        form = FoodItemForm(request.POST)
-        if form.is_valid():
-            food = form.save(commit=False)
-            food.user = request.user  # Asigna el usuario actual
-            food.save()
-            return redirect('all_foods')  # Redirige a la lista de alimentos
-    else:
-        form = FoodItemForm()
-
-    return render(request, 'foods/add_food.html', {'form': form})
-
-@login_required
-def food_update(request, pk):
-    food = get_object_or_404(FoodItem, pk=pk)
-    if request.method == "POST":
-        form = FoodItemForm(request.POST, instance=food)
-        if form.is_valid():
-            form.save()
-            return redirect('food_list')
-    else:
-        form = FoodItemForm(instance=food)
-    return render(request, 'food_form.html', {'form': form})
-
-@login_required
-def food_delete(request, pk):
-    food = get_object_or_404(FoodItem, pk=pk)
-    if request.method == "POST":
-        food.delete()
-        return redirect('food_list')
-    return render(request, 'food_confirm_delete.html', {'food': food})
+            return redirect('food-index')
+        else:
+            error_message = 'Invalid sign up - try again'
+    form = UserCreationForm()
+    context = {'form': form, 'error_message': error_message}
+    return render(request, 'signup.html', context)

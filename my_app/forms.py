@@ -1,7 +1,16 @@
 from django import forms
-from .models import FoodItem
+from .models import Feeding
 
-class FoodItemForm(forms.ModelForm):
+class FeedingForm(forms.ModelForm):
     class Meta:
-        model = FoodItem
-        fields = ['name', 'description']
+        model = Feeding
+        fields = ['date', 'meal']
+        widgets = {
+            'date': forms.DateInput(
+                format=('%Y-%m-%d'),
+                attrs={
+                    'placeholder': 'Select a date',
+                    'type': 'date'
+                }
+            ),
+        }

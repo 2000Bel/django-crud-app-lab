@@ -1,20 +1,51 @@
 from django.db import models
+from django.urls import reverse
+from datetime import date
+# Import the User
 from django.contrib.auth.models import User
 
-# Create your models here.
-    
-class FoodItem(models.Model):  
-    name = models.CharField(max_length=100)
-    description = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
-    def __str__(self):
-        return self.name
-
+MEALS = (
+  ('B', 'Breakfast'),
+  ('L', 'Lunch'),
+  ('D', 'Dinner')
+)
 class Ingredient(models.Model):
-    name = models.CharField(max_length=100)
-    food = models.ManyToManyField(FoodItem, related_name='ingredients')
+    name = models.CharField(max_length=50)
+    color = models.CharField(max_length=20)
 
     def __str__(self):
         return self.name
+
+    def get_absolute_url(self):
+        return reverse('ingredient-detail', kwargs={'pk': self.id})
+
+# Create your models here.
+class Food(models.Model):
+  name = models.CharField(max_length=100)
+  breed = models.CharField(max_length=100)
+  description = models.TextField(max_length=250)
+  age = models.IntegerField()
+  ingredients = models.ManyToManyField(Ingredient)
+  user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+  def __str__(self):
+    return f'{self.name} ({self.id})'
+  
+  def get_absolute_url(self):
+    return reverse('food-detail', kwargs={'food_id': self.id})
+  
+class Feeding(models.Model):
+  date = models.DateField('Feeding date')
+  meal = models.CharField(
+    max_length=1,
+    choices=MEALS,
+    default=MEALS[0][0]
+  )
+  food = models.ForeignKey(Food, on_delete=models.CASCADE)
+
+  def __str__(self):
+    return f"{self.get_meal_display()} on {self.date}"
+  
+  class Meta:
+    ordering = ['-date']

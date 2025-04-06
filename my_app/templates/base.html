@@ -1,32 +1,52 @@
+{% load static %}
+
 <!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="shortcut icon"
+      type="image/png"
+      href="{% static 'images/splash.svg' %}"
+    />
+    <link rel="stylesheet" href="{% static 'css/base.css' %}" />
     <title>Food Collector</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'static/styles.css' %}">
-</head>
-<body>
+    {% block head %} {% endblock %}
+  </head>
+  <body>
     <header>
-        <h1><a href="{% url 'home' %}">Food Collector</a></h1>
-        <nav>
-            <ul>
-                <a href="{% url 'home' %}">Home</a> 
-                {% if user.is_authenticated %}
-                    <li><a href="{% url 'add_food' %}">Add Food</a></li>
-                    <li><a href="{% url 'all_food' %}">All Food</a></li>
-                    <li><a href="{% url 'logout' %}">Logout</a></li>
-                {% else %}
-                    <li><a href="{% url 'signup' %}">signup</a></li>
-                    <li><a href="{% url 'login' %}">login</a></li>
-                {% endif %}
-            </ul>
-        </nav>
+      <div class="header-logo-container">
+        <a href="{% url 'home' %}">
+          <img
+            src="{% static 'images/header-logo.svg' %}"
+            alt="The Food Collector Logo"
+          />
+        </a>
+      </div>
+      <nav>
+        <ul>
+          {% if user.is_authenticated %}
+          <li><a href="{% url 'food-index' %}">All Foods</a></li>
+          <li><a href="{% url 'ingredient-index' %}">All ingredients</a></li>
+          <li><a href="{% url 'food-create' %}">Add a Food</a></li>
+          <li><a href="{% url 'ingredient-create' %}">Add a ingredient</a></li>
+          <li><a href="{% url 'about' %}">About</a></li>
+          <li>
+            <form id="logout-form" method="post" action="{% url 'logout' %}">
+              {% csrf_token %}
+              <button type="submit">Log out</button>
+            </form>
+          </li>
+          {% else %}
+      <li><a href="{% url 'about' %}">About</a></li>
+      <li><a href="{% url 'home' %}">Login</a></li>
+      <li><a href="{% url 'signup' %}">Sign Up</a></li>
+    {% endif %}
+        </ul>
+      </nav>
     </header>
-    <main>
-        {% block content %}
-        {% endblock %}
-    </main>
-</body>
+    <main>{% block content %} {% endblock %}</main>
+  </body>
 </html>

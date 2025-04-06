@@ -1,0 +1,18 @@
+{% extends 'base.html' %} 
+{% load static %} 
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/ingredients/ingredient-detail.css' %}" />
+{% endblock %} 
+{% block content %}
+
+<div class="card" style="border-color: {{ ingredient.color }}">
+  <div class="card-bg" style="background-color: {{ ingredient.color }}"></div>
+  <div class="card-content">
+    <h2>{{ ingredient.name }}</h2>
+    <p>A {{ ingredient.color }} ingredient</p>
+  </div>
+</div>
+<a href="{% url 'ingredient-update' ingredient.id %}" class="btn warn">Edit</a>
+<a href="{% url 'ingredient-delete' ingredient.id %}" class="btn danger">Delete</a>
+
+{% endblock %}
