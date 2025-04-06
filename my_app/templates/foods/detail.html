@@ -5,9 +5,6 @@
 {% endblock %} 
 {% block content %}
 <section class="food-container">
-  <div class="food-img">
-    <img src="{% static 'images/sk8r-boi-food.svg' %}" alt="A skater boy food" />
-  </div>
   <div class="food-details">
     <h1>{{ food.name }}</h1>
     {% if food.age > 0 %}
@@ -16,15 +13,15 @@
       <h2>A {{ food.breed }} kitten.</h2>
     {% endif %}
     <p>{{ food.description }}</p>
-    <h3>Add a Feeding</h3><form
-    action="{% url 'add-feeding' food.id %}"
+    <h3>Add a Order</h3><form
+    action="{% url 'add-order' food.id %}"
     method="post"
     class="subsection-content"
     autocomplete="off"
   >
     {% csrf_token %} 
-    {{ feeding_form.as_p }}
-    <button type="submit" class="btn submit">Add Feeding</button>
+    {{ order_form.as_p }}
+    <button type="submit" class="btn submit">Add Order</button>
   </form>
     <div class="food-actions">
         <a href="{% url 'food-update' food.id %}" class="btn warn">Edit</a>
@@ -34,24 +31,15 @@
   </div>
 </section>
 <!-- Existing food-container above -->
-<div class="feedings-ingredient-container">
-    <section class="feedings">
+<div class="orders-ingredient-container">
+    <section class="orders">
       <div class="subsection-title">
-        <h2>Feedings</h2>
-        <img
-          src="{% static 'images/food-cone.svg' %}"
-          alt="An ice cream cone food"
-        />
-        <img src="{% static 'images/food-onigiri.svg' %}" alt="A food as onigiri" />
-        <img
-          src="{% static 'images/kitty-kabob.svg' %}"
-          alt="A kabob of kittens"
-        />
+        <h2>Orders</h2>
       </div>
       <form method="post" class="subsection-content" autocomplete="off">
         {% csrf_token %} 
-        {{ feeding_form.as_p }}
-        <button type="submit" class="btn submit">Add Feeding</button>
+        {{ order_form.as_p }}
+        <button type="submit" class="btn submit">Add Order</button>
       </form>
       <table>
         <thead>
@@ -61,10 +49,10 @@
           </tr>
         </thead>
         <tbody>
-          {% for feeding in food.feeding_set.all %}
+          {% for order in food.order_set.all %}
             <tr>
-              <td>{{feeding.date}}</td>
-              <td>{{feeding.get_meal_display}}</td>
+              <td>{{order.date}}</td>
+              <td>{{order.get_meal_display}}</td>
             </tr>
           {% endfor %}
         </tbody>
@@ -74,9 +62,6 @@
     <section class="ingredients">
       <div class="subsection-title">
         <h2>ingredients</h2>
-        <img src="{% static 'images/string.svg' %}" alt="A ball of string" />
-        <img src="{% static 'images/mouse.svg' %}" alt="A mouse" />
-        <img src="{% static 'images/fish.svg' %}" alt="A fishy ingredient" />
       </div>
     
       <!-- displaying a food's ingredients -->

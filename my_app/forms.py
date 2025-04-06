@@ -1,9 +1,9 @@
 from django import forms
-from .models import Feeding
+from .models import Order
 
-class FeedingForm(forms.ModelForm):
+class OrderForm(forms.ModelForm):
     class Meta:
-        model = Feeding
+        model = Order
         fields = ['date', 'meal']
         widgets = {
             'date': forms.DateInput(

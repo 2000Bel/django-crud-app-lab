@@ -54,11 +54,3 @@
   margin: 0;
   font-size: var(--font-reg);
 }
-
-.page-header > img {
-  margin-left: 10px;
-}
-
-.page-header > img:first-of-type {
-  margin-left: 15px;
-}

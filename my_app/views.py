@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import ListView, DetailView
 from .models import Food, Ingredient
-from .forms import FeedingForm
+from .forms import OrderForm
 from django.http import HttpResponse
 from django.contrib.auth.views import LoginView
 from django.views.generic import ListView, DetailView
@@ -34,10 +34,10 @@ def food_detail(request, food_id):
     food = Food.objects.get(id=food_id)
     ingredients_food_doesnt_have = Ingredient.objects.exclude(id__in = food.ingredients.all().values_list('id'))
 
-    feeding_form = FeedingForm()
+    order_form = OrderForm()
     return render(request, 'foods/detail.html', {
         'food': food,
-        'feeding_form': feeding_form,
+        'order_form': order_form,
         'ingredients': ingredients_food_doesnt_have
     })
 
@@ -58,13 +58,13 @@ class FoodDelete(LoginRequiredMixin, DeleteView):
   success_url = '/food/'
 
 @login_required
-def add_feeding(request, food_id):
-  form = FeedingForm(request.POST)
+def add_order(request, food_id):
+  form = OrderForm(request.POST)
 
   if form.is_valid():
-    new_feeding = form.save(commit=False)
-    new_feeding.food_id = food_id
-    new_feeding.save()
+    new_order = form.save(commit=False)
+    new_order.food_id = food_id
+    new_order.save()
   
   return redirect('food-detail', food_id=food_id)
 

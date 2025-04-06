@@ -35,8 +35,8 @@ class Food(models.Model):
   def get_absolute_url(self):
     return reverse('food-detail', kwargs={'food_id': self.id})
   
-class Feeding(models.Model):
-  date = models.DateField('Feeding date')
+class Order(models.Model):
+  date = models.DateField('Order date')
   meal = models.CharField(
     max_length=1,
     choices=MEALS,

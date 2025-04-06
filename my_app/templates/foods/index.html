@@ -7,22 +7,6 @@
 
 <section class="page-header">
   <h1>food List</h1>
-  <img
-    src="{% static 'images/cool-food.svg' %}"
-    alt="A cool food"
-  />
-  <img
-    src="{% static 'images/happy-food.svg' %}"
-    alt="A happy food"
-  />
-  <img
-    src="{% static 'images/teacup-food.svg' %}"
-    alt="A food in a teacup"
-  />
-  <img
-    src="{% static 'images/food-in-box.svg' %}"
-    alt="A food in a box"
-  />
 </section>
 
 <section class="card-container">
@@ -30,12 +14,6 @@
     <div class="card">
       <a href="{% url 'food-detail' food.id %}">
         <div class="card-content">
-          <div class="card-img-container">
-            <img
-              src="{% static 'images/sk8r-boi-food.svg' %}"
-              alt="A skater boy food"
-            />
-          </div>
           <h2 class="card-title">{{ food.name }}</h2>
           {% if food.age > 0 %}
           <p>A {{ food.age }} year old {{ food.breed }}</p>
