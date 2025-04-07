@@ -15,11 +15,6 @@
       <a href="{% url 'food-detail' food.id %}">
         <div class="card-content">
           <h2 class="card-title">{{ food.name }}</h2>
-          {% if food.age > 0 %}
-          <p>A {{ food.age }} year old {{ food.breed }}</p>
-          {% else %}
-          <p>A {{ food.breed }} kitten.</p>
-          {% endif %}
           <p><small>{{ food.description }}</small></p>
         </div>
       </a>

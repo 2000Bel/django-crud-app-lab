@@ -7,11 +7,6 @@
 <section class="food-container">
   <div class="food-details">
     <h1>{{ food.name }}</h1>
-    {% if food.age > 0 %}
-      <h2>A {{ food.age }} year old {{ food.breed }}</h2>
-    {% else %}
-      <h2>A {{ food.breed }} kitten.</h2>
-    {% endif %}
     <p>{{ food.description }}</p>
     <h3>Add a Order</h3><form
     action="{% url 'add-order' food.id %}"
@@ -49,12 +44,10 @@
           </tr>
         </thead>
         <tbody>
-          {% for order in food.order_set.all %}
             <tr>
               <td>{{order.date}}</td>
               <td>{{order.get_meal_display}}</td>
             </tr>
-          {% endfor %}
         </tbody>
       </table>
     </section>
@@ -80,8 +73,6 @@
           <p class="no-ingredients">{{food.name}} doesn't have any ingredients!</p>
         {% endif %}
       </div>
-    
-      <h3>Available ingredients</h3>
       <div class="subsection-content">
         <h3>Available ingredients</h3>
 <div class="subsection-content">
@@ -98,7 +89,7 @@
       </a>
       <form action="{% url 'associate-ingredient' food.id ingredient.id %}" method="post">
         {% csrf_token %}
-        <button type="submit" class="btn submit">Give ingredient</button>
+        <button type="submit" class="btn submit">Has this ingredient</button>
       </form>
     </div>
     {% endfor %}

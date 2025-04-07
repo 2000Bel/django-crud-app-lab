@@ -12,8 +12,6 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-
-
 # Create your views here.
 class Home(LoginView):
     template_name = 'home.html'
@@ -43,7 +41,7 @@ def food_detail(request, food_id):
 
 class FoodCreate(LoginRequiredMixin, CreateView):
   model = Food
-  fields = ['name', 'breed', 'description', 'age']
+  fields = ['name', 'description']
 
   def form_valid(self, form):
     form.instance.user = self.request.user
@@ -51,7 +49,7 @@ class FoodCreate(LoginRequiredMixin, CreateView):
 
 class FoodUpdate(LoginRequiredMixin, UpdateView):
   model = Food
-  fields = ['breed', 'description', 'age']
+  fields = ['description']
 
 class FoodDelete(LoginRequiredMixin, DeleteView):
   model = Food

@@ -4,12 +4,6 @@ from datetime import date
 # Import the User
 from django.contrib.auth.models import User
 
-
-MEALS = (
-  ('B', 'Breakfast'),
-  ('L', 'Lunch'),
-  ('D', 'Dinner')
-)
 class Ingredient(models.Model):
     name = models.CharField(max_length=50)
     color = models.CharField(max_length=20)
@@ -23,9 +17,7 @@ class Ingredient(models.Model):
 # Create your models here.
 class Food(models.Model):
   name = models.CharField(max_length=100)
-  breed = models.CharField(max_length=100)
   description = models.TextField(max_length=250)
-  age = models.IntegerField()
   ingredients = models.ManyToManyField(Ingredient)
   user = models.ForeignKey(User, on_delete=models.CASCADE)
 
@@ -36,12 +28,13 @@ class Food(models.Model):
     return reverse('food-detail', kwargs={'food_id': self.id})
   
 class Order(models.Model):
+  MEALS = (
+  ('B', 'Breakfast'),
+  ('L', 'Lunch'),
+  ('D', 'Dinner')
+)
   date = models.DateField('Order date')
-  meal = models.CharField(
-    max_length=1,
-    choices=MEALS,
-    default=MEALS[0][0]
-  )
+  meal = models.CharField(max_length=1, choices=MEALS, default=MEALS[0][0])
   food = models.ForeignKey(Food, on_delete=models.CASCADE)
 
   def __str__(self):

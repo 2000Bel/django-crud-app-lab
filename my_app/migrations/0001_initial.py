@@ -29,7 +29,6 @@ class Migration(migrations.Migration):
                 ('name', models.CharField(max_length=100)),
                 ('type', models.CharField(max_length=100)),
                 ('description', models.TextField(max_length=250)),
-                ('age', models.IntegerField()),
                 ('ingredients', models.ManyToManyField(to='my_app.ingredient')),
                 ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
             ],
